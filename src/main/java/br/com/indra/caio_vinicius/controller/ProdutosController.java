@@ -1,27 +1,16 @@
 package br.com.indra.caio_vinicius.controller;
 
 import br.com.indra.caio_vinicius.model.Produtos;
-import br.com.indra.caio_vinicius.repository.ProdutosRepository;
 import br.com.indra.caio_vinicius.service.ProdutosService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -34,52 +23,56 @@ public class ProdutosController {
     private final ProdutosService produtosService;
 
     @PostMapping
-    @Operation(description = "Endpoint para criar um novo produto",
-            summary = "Criação de produto")
+    @Operation(summary = "Criação de produto", description = "Endpoint para criar um novo produto vinculado a uma categoria")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Produto criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou Categoria não encontrada")
     })
-    public ResponseEntity<Produtos> criarProduto(@RequestBody Produtos produto){
-        return ResponseEntity.status(201).body(produtosService.createdProduto(produto));
+    public ResponseEntity<Produtos> criarProduto(
+            @RequestBody Produtos produto,
+            @Parameter(description = "ID da categoria obrigatória") @RequestParam Long categoriaId) {
+        return ResponseEntity.status(201).body(produtosService.createdProduto(produto, categoriaId));
     }
 
     @GetMapping
-    @Operation(summary = "Lista produtos ativos", description = "Retorna todos os produtos que não sofreram Delete")
+    @Operation(summary = "Lista produtos com filtros", description = "Retorna produtos ativos, permitindo filtrar por nome do produto ou da categoria")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    public ResponseEntity<List<Produtos>> getAll(){
-        return ResponseEntity.ok(produtosService.getAll());
+    public ResponseEntity<List<Produtos>> getAll(
+            @Parameter(description = "Parte do nome do produto") @RequestParam(required = false) String nome,
+            @Parameter(description = "Parte do nome da categoria") @RequestParam(required = false) String nomeCategoria) {
+        return ResponseEntity.ok(produtosService.buscarPorFiltros(nome, nomeCategoria));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Busca por ID", description = "Retorna um único produto baseado no ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Produto encontrado"),
-            @ApiResponse(responseCode = "404", description = "Produto não encontrado no banco")
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
-    public ResponseEntity<Produtos> getById(@PathVariable Long id){
-        // Se o service retornar null, tratar para devolver 404
+    public ResponseEntity<Produtos> getById(@PathVariable Long id) {
         try {
             Produtos produto = produtosService.getById(id);
-            return (produto != null) ? ResponseEntity.ok(produto) : ResponseEntity.notFound().build();
+            return ResponseEntity.ok(produto);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/atualiza/{id}")
-    @Operation(summary = "Atualização completa", description = "Substitui todos os dados de um produto existente")
+    @Operation(summary = "Atualização completa", description = "Substitui os dados de um produto e permite alterar sua categoria")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "ID informado não existe")
+            @ApiResponse(responseCode = "404", description = "ID ou Categoria não encontrada")
     })
-    public ResponseEntity<Produtos> atualizarProduto(@PathVariable Long id, @RequestBody Produtos produto){
-        produto.setId(id);
-        return ResponseEntity.ok(produtosService.atualiza(produto));
+    public ResponseEntity<Produtos> atualizarProduto(
+            @PathVariable Long id,
+            @RequestBody Produtos produto,
+            @Parameter(description = "Novo ID da categoria") @RequestParam Long categoriaId) {
+        return ResponseEntity.ok(produtosService.atualiza(id, produto, categoriaId));
     }
 
     @PatchMapping("/atualiza-preco/{id}")
-    @Operation(summary = "Atualiza apenas o preço", description = "Endpoint específico para reajuste de valores")
+    @Operation(summary = "Atualiza apenas o preço", description = "Endpoint específico para reajuste de valores com registro em histórico")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Preço atualizado"),
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")

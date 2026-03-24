@@ -47,8 +47,9 @@ public class HistoricoPreco {
     @Column(name = "preco_novo", precision = 10, scale = 2)
     private BigDecimal precoNovo;
 
-    @Column(name = "data_alteracao", updatable = false)
+    @Column(name = "data_alteracao", nullable = false)
     @CreationTimestamp
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataAlteracao;
 
 }

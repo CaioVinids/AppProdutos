@@ -1,5 +1,6 @@
 package br.com.indra.caio_vinicius.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -51,7 +52,7 @@ public class Produtos {
     private Integer estoque;
 
     @Column(name = "data_criacao", updatable = false)
-    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataCriacao;
 
     @PrePersist
@@ -63,7 +64,12 @@ public class Produtos {
         if (this.preco == null) {
             return null;
         }
-        // Força 2 casas decimais e arredondamento padrão (Ex: 1499.9 vira 1499.90)
+        /// Força 2 casas decimais e arredondamento padrão (Ex: 1499.9 vira 1499.90)
         return this.preco.setScale(2, java.math.RoundingMode.HALF_UP);
     }
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categorias categoria;
 }
