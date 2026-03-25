@@ -19,7 +19,7 @@ public class CategoriasService {
         if (nome != null && !nome.isBlank()) {
             return categoriasRepository.findByNomeContainingIgnoreCase(nome);
         }
-        return categoriasRepository.findByCategoriaPaiIsNull();
+        return categoriasRepository.findByCategoriaPaiIsNullOrderByIdAsc();
     }
 
     public Categorias getById(Long id) {

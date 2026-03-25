@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CategoriasRepository extends JpaRepository<Categorias, Long> {
 
-    List<Categorias> findByCategoriaPaiIsNull();
+    List<Categorias> findByCategoriaPaiIsNullOrderByIdAsc();
 
     List<Categorias> findByNomeContainingIgnoreCase(String nome);
 
