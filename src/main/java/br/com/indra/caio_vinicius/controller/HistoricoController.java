@@ -29,7 +29,6 @@ public class HistoricoController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista geral de histórico retornada com sucesso")
     })
-
     public ResponseEntity<List<HistoricoProdutoDTO>> getAll() {
         List<HistoricoProdutoDTO> historicoCompleto = historicoService.getAllHistorico();
         return ResponseEntity.ok(historicoCompleto);
@@ -42,7 +41,6 @@ public class HistoricoController {
             @ApiResponse(responseCode = "200", description = "Histórico retornado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Produto não possui histórico ou não existe")
     })
-
     public ResponseEntity<List<HistoricoProdutoDTO>> getByProduto(@PathVariable Long produtoId) {
         List<HistoricoProdutoDTO> historico = historicoService.getHistoricoByProdutoId(produtoId);
         return ResponseEntity.ok(historico);

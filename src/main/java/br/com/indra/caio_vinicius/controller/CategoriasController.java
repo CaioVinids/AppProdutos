@@ -24,6 +24,7 @@ public class CategoriasController {
 
     @GetMapping
     @Operation(summary = "Lista todas as categorias" ,description = "Retorna lista completa de categorias cadastradas")
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     public ResponseEntity<List<Categorias>> listar(@RequestParam(required = false) String nome) {
         return ResponseEntity.ok(categoriasService.getAll(nome));
     }
