@@ -62,7 +62,7 @@ public class EstoqueService {
     }
 
     public List<EstoqueTransaction> obterHistorico(Long produtoId) {
-        return transactionRepository.findByProdutoIdOrderByDataTransacaoDesc(produtoId);
+        return transactionRepository.findByProduto_IdOrderByDataTransacaoDesc(produtoId);
     }
 
     public void devolverEstoque(Long produtoId, Integer qtd, String obs) {
@@ -79,7 +79,7 @@ public class EstoqueService {
         Produtos produto = produtosRepository.findById(produtoId)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
-        /// No ajuste, registramos a diferença para o histórico
+        /// No ajuste, registra a diferença para o histórico
         int diferenca = novaQuantidade - produto.getEstoque();
 
         produto.setEstoque(novaQuantidade);

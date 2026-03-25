@@ -1,6 +1,8 @@
 package br.com.indra.caio_vinicius.controller;
 
+import br.com.indra.caio_vinicius.model.EstoqueTransaction;
 import br.com.indra.caio_vinicius.model.Produtos;
+import br.com.indra.caio_vinicius.repository.EstoqueTransactionRepository;
 import br.com.indra.caio_vinicius.service.ProdutosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +23,7 @@ import java.util.Map;
 public class ProdutosController {
 
     private final ProdutosService produtosService;
+    private final EstoqueTransactionRepository estoqueTransactionRepository;
 
     @PostMapping
     @Operation(summary = "Criação de produto", description = "Endpoint para criar um novo produto vinculado a uma categoria")
@@ -91,4 +94,11 @@ public class ProdutosController {
         produtosService.deletarProduto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{produtoId}/historico")
+    @Operation(summary = "Histórico de movimentação", description = "Retorna todas as entradas e saídas do produto.")
+    public ResponseEntity<List<EstoqueTransaction>> buscarHistorico(@PathVariable Long produtoId) {
+        return ResponseEntity.ok(estoqueTransactionRepository.findByProduto_IdOrderByDataTransacaoDesc(produtoId));
+    }
+
 }

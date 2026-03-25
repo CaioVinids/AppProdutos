@@ -92,7 +92,7 @@ public class ProdutosService {
 
         /// Verifica se o campo "preco" existe no JSON enviado
         if (campos.containsKey("preco")) {
-            // Converte o valor do Map para String e depois para BigDecimal
+            /// Converte o valor do Map para String e depois para BigDecimal
             BigDecimal novoPreco = new BigDecimal(campos.get("preco").toString())
                     .setScale(2, java.math.RoundingMode.HALF_UP);
 
@@ -110,7 +110,7 @@ public class ProdutosService {
         }
         return produtosRepository.saveAndFlush(produto);
     }
-    /// Evitar repetição de código
+
     private void validarPreco(BigDecimal preco) {
         if (preco == null || preco.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O preço deve ser maior que zero.");
@@ -118,22 +118,20 @@ public class ProdutosService {
     }
 
     public List<Produtos> buscarPorFiltros(String nome, String nomeCategoria) {
-        // Se ambos estiverem vazios, retorna todos
+        /// Se ambos estiverem vazios, retorna todos
         if ((nome == null || nome.isBlank()) && (nomeCategoria == null || nomeCategoria.isBlank())) {
             return produtosRepository.findAll();
         }
 
-        // Se só tem o nome da categoria
         if (nome == null || nome.isBlank()) {
             return produtosRepository.findByCategoriaNomeContainingIgnoreCase(nomeCategoria);
         }
 
-        // Se só tem o nome do produto
         if (nomeCategoria == null || nomeCategoria.isBlank()) {
             return produtosRepository.findByNomeContainingIgnoreCase(nome);
         }
 
-        // Se tem os dois filtros
+        /// Se tem os dois filtros
         return produtosRepository.findByNomeContainingIgnoreCaseAndCategoriaNomeContainingIgnoreCase(nome, nomeCategoria);
     }
 }

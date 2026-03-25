@@ -25,7 +25,7 @@ public class CategoriasController {
     @GetMapping
     @Operation(summary = "Lista todas as categorias" ,description = "Retorna lista completa de categorias cadastradas")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
-    public ResponseEntity<List<Categorias>> listar(@RequestParam(required = false) String nome) {
+    public ResponseEntity<List<Categorias>> listarCategoria(@RequestParam(required = false) String nome) {
         return ResponseEntity.ok(categoriasService.getAll(nome));
     }
 
@@ -48,7 +48,7 @@ public class CategoriasController {
     public ResponseEntity<Categorias> criarCategoria(@RequestBody Categorias categoria,
                                                       @Parameter(description = "ID da categoria pai (opcional para categorias raiz)")
                                                       @RequestParam(required = false) Long idPai) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriasService.criar(categoria, idPai));
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriasService.criarCategoria(categoria, idPai));
     }
 
     @PutMapping("/atualiza/{id}")
@@ -61,7 +61,7 @@ public class CategoriasController {
                                                           @RequestBody Categorias categoria,
                                                           @Parameter(description = "Novo ID da categoria pai")
                                                           @RequestParam(required = false) Long idPai) {
-        return ResponseEntity.ok(categoriasService.atualizar(id, categoria, idPai));
+        return ResponseEntity.ok(categoriasService.atualizarCategoria(id, categoria, idPai));
     }
 
     @DeleteMapping("/{id}")
@@ -71,7 +71,7 @@ public class CategoriasController {
             @ApiResponse(responseCode = "404", description = "ID não encontrado")
     })
     public ResponseEntity<Void> deletarCategoria(@PathVariable Long id) {
-        categoriasService.deletar(id);
+        categoriasService.deletarCategoria(id);
         return ResponseEntity.noContent().build();
     }
 }

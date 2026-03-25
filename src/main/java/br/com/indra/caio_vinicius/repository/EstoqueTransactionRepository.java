@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface EstoqueTransactionRepository extends JpaRepository<EstoqueTransaction, String> {
 
-    // Busca todas as movimentações de um produto específico
-    List<EstoqueTransaction> findByProdutoIdOrderByDataTransacaoDesc(Long produtoId);
+    List<EstoqueTransaction> findByProduto_IdOrderByDataTransacaoDesc(Long produtoId);
 }

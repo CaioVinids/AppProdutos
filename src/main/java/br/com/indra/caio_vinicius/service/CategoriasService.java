@@ -28,7 +28,7 @@ public class CategoriasService {
     }
 
     @Transactional
-    public Categorias criar(Categorias categoria, Long idPai) {
+    public Categorias criarCategoria(Categorias categoria, Long idPai) {
 
         if (categoria.getNome() == null || categoria.getNome().isBlank()) {
             throw new IllegalArgumentException("O nome da categoria é obrigatório.");
@@ -47,7 +47,7 @@ public class CategoriasService {
     }
 
     @Transactional
-    public Categorias atualizar(Long id, Categorias dadosAtualizados, Long idPai) {
+    public Categorias atualizarCategoria(Long id, Categorias dadosAtualizados, Long idPai) {
         Categorias categoriaExistente = getById(id);
 
         if (dadosAtualizados.getNome() == null || dadosAtualizados.getNome().isBlank()) {
@@ -68,7 +68,7 @@ public class CategoriasService {
         return categoriasRepository.save(categoriaExistente);
     }
 
-    public void deletar(Long id) {
+    public void deletarCategoria(Long id) {
         Categorias categoria = getById(id);
         categoriasRepository.delete(categoria);
     }
